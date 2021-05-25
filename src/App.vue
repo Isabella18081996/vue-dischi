@@ -1,28 +1,55 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+
+    <div v-if="!loading" >
+      <HeaderComp />
+      <MainComp :discs="arrDischi" />
+    </div>  
+
+    <Loader title="Libreria dischi spotify" v-else />
+
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import axios from 'axios';
+import HeaderComp from './components/HeaderComp.vue';
+import MainComp from './components/MainComp.vue';
+import Loader from '@/components/Loader.vue'
+
 
 export default {
   name: 'App',
+  data(){
+    return{
+      axios,
+      arrDischi: [],
+      loading:true,
+    }
+  },
+  created(){
+    axios.get('https://flynn.boolean.careers/exercises/api/array/music')
+    .then(res =>{
+      console.log(res.data.response);
+      this.arrDischi = res.data.response;
+      this.loading = false;
+      
+    })
+    .catch(err =>{
+      console.log(err);
+    })
+  },
   components: {
-    HelloWorld
+
+    HeaderComp,
+    MainComp,
+    Loader
+    
   }
 }
 </script>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+@import '~bootstrap/scss/bootstrap';
+@import '@/assets/style/general.scss';
 </style>
